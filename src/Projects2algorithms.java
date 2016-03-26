@@ -4,30 +4,66 @@ import java.util.Vector;
 public class Projects2algorithms {
 	
 	public static void main(String[] args) {
-		
+		Projects2algorithms test = new Projects2algorithms();
+		int n = 6;
+		int[] gallons_req = new int[] {0, 10, 50, 20, 40, 30, 30};
+		test.get_table(gallons_req, n);
 	}
 	
-	public double[] min_cost_path(double curr_gals, int curr_day, int n, double[] needed_gals, double[] curr_path) {
-		// first check possibility that we do not have enough to cover cost
-		if(needed_gals[curr_day + 1] > curr_gals) {
-			// have to make an order
-			// order size varies by how much would be required for the ____ days ahead
-			// where we compare to find the best option recursively
-			// ex: ordering to last 1 day vs. ordering to last the next 2 days
-			double amount = needed_gals[curr_day + 1] - curr_gals;
-			double[] possibilities = new double[n - curr_day];
-			for(int i = 0; i < n - curr_day; i++) {
-				possibilities[i] = amount;
-				amount += needed_gals[i + curr_day + 1];
-			}
-			// now try all possibilities
-			for(int i = 0; i < n; i++) {
-				
+	// gallons_req must be n+1 size
+	public int[][] get_table(int[] gallons_req, int n) {
+		int[][] table = new int[n + 1][n + 1];
+		table[0][0] = 0;
+		//first row: table[0][i]
+		for(int i = 1; i <= n; i++) {
+			table[0][i] = table[0][i-1] + gallons_req[i];
+		}
+		//first column: table[i][0]
+		for(int i = 1; i <= n; i++) {
+			table[i][0] = -gallons_req[i];
+		}
+		for(int i = 1; i <= n; i++) {
+			System.out.println();
+			for(int j = 1; j <= n; j++) {
+				// table[i][j], i refers to row #, j refers to column #
+				if(i + j > n) {
+					table[i][j] = Integer.MAX_VALUE;
+					continue;
+				}
+				table[i][j] = table[i][j-1] + gallons_req[i + j];
 			}
 		}
-		// otherwise, choose between making and not making an order, where the order size varies
-		// by how much would be required for the ____ days ahead
-		return null;
+		return table;
 	}
 	
+	private boolean option_is_valid(int[][] table, int[] option, int L) {
+		int total = table[0][option[0]];
+		int n = table[0].length - 1;
+		for(int i = 1; i <= n; i++) {
+			if(total + table[i][option[i]] > L) {
+				return false; // not a valid option, cannot hold more than L gallons
+			}
+			total += table[i][option[i]];
+			if(i == n && total != 0) {
+				return false; // not a valid option, must have 0 left over
+			}
+		}
+		return false;
+	}
+	
+	public ArrayList<int[]> get_valid_options(int[][] table, int[] option, int x, ArrayList<int[]> options, int L) {
+		int n = table[0].length - 1;
+		if(x == n) {
+			if(option_is_valid(table, option, L)) {
+				options.add(option);
+			}
+		}
+		for(int i = 0; i <= n; i++) {
+			int[] next_option = option; 
+			next_option[x] = i;
+			options = get_valid_options(table, next_option, x + 1, options);
+		}
+		return options;
+	}
 }
+
