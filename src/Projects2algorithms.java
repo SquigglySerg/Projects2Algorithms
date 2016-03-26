@@ -24,9 +24,13 @@ public class Projects2algorithms {
 			// first possibility: we order enough for the next day only:
 			double[] possibilities = new double[n];
 			possibilities[0] = possible_amount;
-			for(int i = 1; i <= n; i++) {
+			for(int i = curr_day; i <= n; i++) {
 				possible_amount += needed_gals[i];
 				possibilities[i] = possible_amount;
+			}
+			// now try all possibilities
+			for(int i = 0; i < n; i++) {
+				
 			}
 		}
 		// otherwise, choose between making and not making an order, where the order size varies
