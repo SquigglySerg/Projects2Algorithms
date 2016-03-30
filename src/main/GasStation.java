@@ -50,7 +50,8 @@ public class GasStation {
 				int left = 9999999;
 				
 				if(i != j){
-					left = table[i][j-1].getCost() + (j-lastOrder)*C*gas.get(j);
+					if(table[i][j-1].getParent_dir() != Direction.UP)
+						left = table[i][j-1].getCost() + (j-lastOrder)*C*gas.get(j);
 				}
 				
 				table[i][j].setCost(top);
