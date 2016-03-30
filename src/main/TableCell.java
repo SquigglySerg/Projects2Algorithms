@@ -18,5 +18,10 @@ public class TableCell {
 
 	public void setParent_dir(Direction parent_dir) {
 		this.parent_dir = parent_dir;
+	}
+
+	@Override
+	public String toString() {
+		return "[" + cost + "]";
 	};
 }
